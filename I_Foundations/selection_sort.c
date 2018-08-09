@@ -13,15 +13,18 @@ int main ( int argc, char *argv[] ) {
   }
 
   // insertion-sort algorithm.
-  int k, m;
-  for (int n = 1; n < argc - 1; n++) {
+  int k, l;
+  for (int n = 0; n < argc - 2; n++) {
     k = a[n];
-    m = n - 1;
-    while (k < a[m] && m >= 0) {
-      a[m + 1] = a[m];
-      a[m] = k;
-      m = m - 1;
+    l = n;
+    for (int m = n + 1; m < argc - 1; m++) {
+      if (a[n] > a[m]) {
+        k = a[m];
+        l = m;
+      }
     }
+    a[l] = a[n];
+    a[n] = k;
   }
 
   // shows the sorted array.
