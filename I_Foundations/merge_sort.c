@@ -33,7 +33,7 @@ int main ( int argc, char *argv[] ) {
 
 void merge( int a[], int p, int q, int r ) {
   // set b = [a[p-1 ... q-1], 65535], and c = [a[q ... r-1], 65535].
-  // and so n = b.length + 1, m = c.length + 1
+  // and so n = b.length - 1, m = c.length - 1
   int n = q - p + 1;
   int m = r - q;
   int b[n + 1];
@@ -41,12 +41,13 @@ void merge( int a[], int p, int q, int r ) {
   for (int i = 0; i < n; i++) {
     b[i] = a[i + p - 1];
   }
-  b[n] = 655;
+  b[n] = 65535;
   for (int i = 0; i < m; i++) {
     c[i] = a[i + q];
   }
-  c[m] = 655;
+  c[m] = 65535;
 
+  // sort a[p-1 ... r-1]. a[p-1 ... q-1] and a[q ... r-1] are already sorted.
   int i = 0;
   int j = 0;
   for (int k = p - 1; k < r; k++) {
@@ -61,11 +62,13 @@ void merge( int a[], int p, int q, int r ) {
 }
 
 void merge_sort( int a[], int p, int r ) {
-  int q;
+  // when sorting a[8], cut it into a[1, 2], a[3, 4], a[5, 6], and a[7, 8].
+  // then sort each array.
+  // after that, sort [a[1, 2], a[3, 4]] and a[a[5, 6], a[7, 8]].
+  // lastly, sort [[a[1, 2], a[3, 4]], a[a[5, 6], a[7, 8]]].
   if (p < r) {
-    q = (p + r) / 2;
-    merge_sort(a, p, q);
-    merge_sort(a, q + 1, r);
-    merge(a, p, q, r);
+    merge_sort(a, p, (p + r) / 2);
+    merge_sort(a, (p + r) / 2 + 1, r);
+    merge(a, p, (p + r) / 2, r);
   }
 }
