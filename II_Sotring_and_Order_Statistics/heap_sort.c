@@ -1,15 +1,25 @@
-// C program for an heap-sort algorithm.
+// C program for a heap-sort algorithm.
 // input: an integer array such as 1 3 4 2 9 7.
 // output: a sorted array, 1 2 3 4 7 9.
 #include "stdio.h"
 #include "stdlib.h"
 
-int parent(int i);
-int left(int i);
-int right(int i);
-void max_heaptify(int a[], int i, int heap_size);
-void build_max_heap(int a[], int heap_size);
+// heap_sort receives an array to be sorted and its heap size,
+// and returns sorted a[0...heap_size-1].
 void heap_sort(int a[], int heap_size);
+// build_max_heap returns a heap that meets max-heap-property,
+// which means that the number of parents is not less than the two numbers of its children.
+// That also means a[0] is not less than all elements in a[].
+void build_max_heap(int a[], int heap_size);
+// max_heaptify receives an array a[] and an index i.
+// It sorts the array such that a[i] is not less than a[left(i)] and a[right(i)],
+// and keeps max-heap-property.
+void max_heaptify(int a[], int i, int heap_size);
+
+int parent(int i); // returns the index of the parent node of node i.
+int left(int i); // returns the index of the left node of node i.
+int right(int i); // returns the index of the right node of node i.
+void exchange(int a[], int p, int q); // exchanges a[p] and a[q].
 
 int main (int argc, char *argv[]) {
 
@@ -30,16 +40,22 @@ int main (int argc, char *argv[]) {
   }
 }
 
-int parent(int i) {
-  return i / 2;
+void heap_sort(int a[], int heap_size) {
+  int tmp;
+
+  build_max_heap(a, heap_size);
+  for (int i = heap_size; i > 0; i--) {
+    exchange(a, 0, i - 1);
+
+    heap_size -= 1;
+    max_heaptify(a, 1, heap_size);
+  }
 }
 
-int left(int i) {
-  return 2 * i;
-}
-
-int right(int i) {
-  return 2 * i + 1;
+void build_max_heap(int a[], int heap_size) {
+  for (int i = heap_size / 2; i > 0; i--) {
+    max_heaptify(a, i, heap_size);
+  }
 }
 
 void max_heaptify(int a[], int i, int heap_size) {
@@ -56,29 +72,25 @@ void max_heaptify(int a[], int i, int heap_size) {
     max = r;
   }
   if (max != i) {
-    tmp = a[max - 1];
-    a[max - 1] = a[i - 1];
-    a[i - 1] = tmp;
+    exchange(a, i - 1, max - 1);
     max_heaptify(a, max, heap_size);
   }
 }
 
-void build_max_heap(int a[], int heap_size) {
-  for (int i = heap_size / 2; i > 0; i--) {
-    max_heaptify(a, i, heap_size);
-  }
+int parent(int i) {
+  return i / 2;
 }
 
-void heap_sort(int a[], int heap_size) {
-  int tmp;
+int left(int i) {
+  return 2 * i;
+}
 
-  build_max_heap(a, heap_size);
-  for (int i = heap_size; i > 0; i--) {
-    tmp = a[0];
-    a[0] = a[i - 1];
-    a[i - 1] = tmp;
+int right(int i) {
+  return 2 * i + 1;
+}
 
-    heap_size -= 1;
-    max_heaptify(a, 1, heap_size);
-  }
+void exchange(int a[], int p, int q) {
+  int tmp = a[p];
+  a[p] = a[q];
+  a[q] = tmp;
 }
